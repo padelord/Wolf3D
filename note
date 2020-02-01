@@ -1,0 +1,25 @@
+texture file:
+file.cpw
+HEADER :
+#define SIGNATURE 0x42424242
+SIGNATURE (4B)
+	//W (in pixel) (4B)
+Size (in bites to read) (4B)
+Texture (SizeB)
+Size (in bites to read) (4B)
+Texture (SizeB)
+
+floor = 0
+
+0x
+Est = 55 => 0->255
+West= 55 => 0->255
+Nort= 55 => 0->255
+Sout= 55 => 0->255
+0x
+ID = 00
+INFO = 000000
+if (v >> 24 > 36)
+	entyty
+else
+	wall
