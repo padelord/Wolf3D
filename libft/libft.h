@@ -6,7 +6,7 @@
 /*   By: padelord <padelord@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/08 02:53:09 by padelord          #+#    #+#             */
-/*   Updated: 2019/10/09 17:37:33 by padelord         ###   ########.fr       */
+/*   Updated: 2020/02/01 22:17:01 by padelord         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <string.h>
 
 # ifndef BUFF_SIZE
-#  define BUFF_SIZE 256
+#  define BUFF_SIZE 4096
 # endif
 # ifndef SIZEOF_LL
 #  define SIZEOF_LL sizeof(long long)

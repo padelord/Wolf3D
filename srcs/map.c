@@ -8,7 +8,7 @@
 
 int		get_validmap(t_map *map, char *buffer)
 {
-	char	*p;
+	unsigned int	*p;
 	int		x;
 	int		y;
 
@@ -20,83 +20,98 @@ int		get_validmap(t_map *map, char *buffer)
 		while (++x < map->width)
 		{
 			if (*buffer == '\n')
-				*p++ = WALL;
+				*p++ = IWALL;
+			else if (*buffer == PLR)
+			{
+				map->orig = (t_ivec2){x, y};
+				*p++ = 0;
+				buffer++;
+			}
 			else
-				*p++ = *buffer++;
+				*p++ = (*buffer++ == FLOOR ? 0 : IWALL);
 		}
 		buffer++;
 	}
 	return (0);
 }
 
-int		check_player(t_map *map, char *buffer)
+int		check_player(t_map *map, char *buffer, t_ivec2 size)
 {
 	int	count;
 	int	i;
+	t_ivec2	pos;
 
+	map->height = size.y;
+	map->width = size.x;
 	count = 0;
+	pos.y = 0;
 	i = -1;
 	while (buffer[++i])
 	{
+		pos.x = 0;
 		if (buffer[i] == PLR)
 		{
 			if (count++)
 				return (0);
-			buffer[i] = PLR;
-			map->orig = (t_ivec2){i % WIDTH, i / WIDTH};
+			pos.x++;
 		}
+		pos.y++;
 	}
+	printf("orig: %d:%d\n", map->orig.x, map->orig.y);
 	return (1);
 }
 
-int		valid_map(t_map *map, char *buffer)
+int		valid_map(t_map **map, char *buffer)
 {
 	int	tline;
 	char	*t;
+	t_ivec2	i;
 
-	t = buffer;
 	tline = 0;
+	i = (t_ivec2){0, 0};
+	t = buffer;
 	while (*t)
 	{
 		if (*t == '\n')
 		{
-			if (tline > map->width)
-				map->width = --tline;
+			if (tline > i.x)
+				i.x = --tline;
 			tline = 0;
-			map->height++;
+			i.y++;
 		}
 		tline++;
-		if (!(*t == FLOOR || *t == WALL || *t == PLR || *t == '\n'))
-			return (-3);
 		t++;
 	}
-	if (!(check_player(map, buffer)))
-		return (-4);
-	if (!(map->data = malloc(map->width * map->height)))
-		return (-5);//TODO: malloc foireux
-	return (get_validmap(map, buffer));
+	if (!(*map = malloc(sizeof(t_map) + sizeof(int) * i.x * i.y)))
+		return (R_MAP_MALC);//TODO: malloc foireux
+	ft_bzero((void*)*map, sizeof(t_map) + sizeof(int) * i.x * i.y);
+	if (!(check_player(*map, buffer, i)))
+		return (R_MAP_PLYR);
+	return (get_validmap(*map, buffer));
 }
 
-int		get_map(const char *name, t_map *map)
+int		get_map(const char *name, t_map **map)
 {
 	char	buffer[BUFF_SIZE];
 	int		fd;
 	int		i;
 
-	ft_bzero((void*)map, sizeof(t_map));
 	if ((fd = open(name, O_RDONLY)) == -1)
-	{
-		return (-1);//TODO: Open foireux
-	}
+		return (R_MAP_OPEN);
 	if ((i = read(fd, buffer, BUFF_SIZE)) == BUFF_SIZE)
-		return (-2);//TODO: Read foireux
+		return (R_MAP_READ);
 	buffer[i] = '\0';
+	while (i--)
+	{
+		if (!(buffer[i] == FLOOR || buffer[i] == WALL || buffer[i] == PLR
+			|| buffer[i] == '\n'))
+			return (R_MAP_CHAR);
+	}
 	return (valid_map(map, buffer));
 }
 
 void	delete_map(t_map *data)
 {
-	ft_bzero(data->data, data->height * data->width);
-	free(data->data);
-	ft_bzero(data, sizeof(t_map));
+	ft_bzero(data, sizeof(t_map) + data->height * data->width);
+	free(data);
 }

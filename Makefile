@@ -4,7 +4,11 @@ SRCS	=	main.c
 SRCS	+=	color.c
 SRCS	+=	map.c
 SRCS	+=	init.c
+SRCS	+=	closeEnv.c
+SRCS	+=	draw.c
+SRCS	+=	hook.c
 SRCS	+=	debug.c
+SRCS	+=	test.c
 
 
 SRC		=	$(addprefix srcs/, $(SRCS))

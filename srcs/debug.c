@@ -4,12 +4,31 @@
 
 void printmap(t_map *map)
 {
-	int		i;
+	t_ivec2	i;
+	int		curs;
+	unsigned int t;
+	char	buff[BUFF_SIZE];
 
-	i = -1;
-	while (++i<map->height)
+	printf("map: %d:%d\n", map->width, map->height);
+	i.y = -1;
+	while (++i.y < map->height)
 	{
-		write(1, (map->data) + i * map->width, map->width);
-		write(1, "\n", 1);
+		i.x = -1;
+		while (++i.x < map->width)
+		{
+			curs = i.x + i.y * (map->width);
+			if ((t = map->data[curs]))
+			{
+				if (t >> 24 > 36)
+					buff[curs + i.y] = 'E';
+				else
+					buff[curs + i.y] = 'W';
+			}
+			else
+				buff[curs + i.y] = '.';
+		}
+		buff[curs + i.y + 1] = '\n';
 	}
+	buff[curs + i.y] = '\0';
+	ft_putendl(buff);
 }
