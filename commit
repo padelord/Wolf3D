@@ -1,0 +1,18 @@
+#!/bin/sh
+if [ $# = 1 ]
+then
+	sdate=`date "+%y/%m/%d|%H:%M:%S"`
+	echo "commit message : \"$sdate : $1\""
+	echo "Are you ok? (y/n)"
+	read ans
+	if [ $ans = 'y' ]
+	then
+		git commit -m "$sdate : $1"
+	fi
+	if [ $ans = 'n' ]
+	then
+		echo Canceled
+	fi
+else
+	echo "Usage : ./commit \"message tocommit\""
+fi
