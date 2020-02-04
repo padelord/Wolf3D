@@ -12,6 +12,7 @@
 # define FC_FLOOR 0x0072727200727272
 # define USAGE "./Wolf3D [map] || \"test\""
 # define IWALL 0x01020304
+
 #include <stdio.h>
 
 typedef float	t_vec4 __attribute__((ext_vector_type(4)));

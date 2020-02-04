@@ -36,3 +36,8 @@ Affichage d'une frame
 
 
 zbuffer :
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+uint *img, *tex;
