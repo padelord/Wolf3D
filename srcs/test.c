@@ -149,6 +149,7 @@ void test()
 	mlx_put_image_to_window(mlx, win, img1, 0, 0);
 	mlx_put_image_to_window(mlx, win, img2, WIDTH / 2, 0);
 	mlx_put_image_to_window(mlx, win, img3, 0, 0);
+	mlx_do_sync(env->mlx);
 	usleep(3000000);
 
 return ;
