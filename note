@@ -23,3 +23,16 @@ if (v >> 24 > 36)
 	entyty
 else
 	wall
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Affichage d'une frame
+
+3 data:
+-murs
+//-entités
+//-sprites
+
+
+
+zbuffer :

@@ -39,7 +39,7 @@ void	draw_wall(unsigned int *buffer, unsigned int *tex)
 	i = -1;
 	while (++i < WIDTH)
 	{
-		draw_wcol(buffer++, i/3 + 100, tex + (i/TEXW + i % TEXW));
+		draw_wcol(buffer++, i/3 + 100, tex + (i % TEXW));
 	}
 }
 
@@ -54,12 +54,7 @@ void print_bchar(unsigned char c)
 	write(1, buff, 8);
 }
 
-typedef struct	s_texture
-{
-	unsigned int	*pixels;
-	int				w;
-	int				h;
-}				t_texture;
+
 
 void apply_text(t_texture src, t_texture dst, t_ivec2 pos)
 {
@@ -83,6 +78,21 @@ void apply_text(t_texture src, t_texture dst, t_ivec2 pos)
 			j.x++;
 		}
 		j.y++;
+	}
+}
+
+void draw_hbg(unsigned int *buffer, int al)
+{
+	unsigned int	color;
+	int				i;
+	int				size;
+
+	color = (al ? 0x00FFFFFF : 0xFFFFFFFF);
+	size = WIDTH * (HEIGHT / 2);
+	i = -1;
+	while (++i < size)
+	{
+		buffer[i] = color;
 	}
 }
 
@@ -117,26 +127,43 @@ void test()
 	void 	*win;
 	void	*img1;
 	void	*img2;
+	void	*img3;
 	char	*buffer;
+	unsigned int	*buffer2;
+	unsigned int	*buffer3;
 	char	*btex;
-	int		frame = 37;
+	int		frame = 105;
 	int		x = 0, y = 0;
 	mlx = mlx_init();
 	win = mlx_new_window(mlx, WIDTH, HEIGHT, "Wolf3D");
 	img1 = mlx_new_image(mlx, WIDTH, HEIGHT);
 	buffer = mlx_get_data_addr(img1, &bpp, &sl, &endian);
 	printf("bpp : %d\nsl  : %d\nend : %d\n", bpp, sl, endian);
+	img2 = mlx_new_image(mlx, WIDTH / 2, HEIGHT);
+	buffer2 = mlx_get_data_addr(img2, &bpp, &sl, &endian);
+	img3 = mlx_new_image(mlx, WIDTH / 2, HEIGHT);
+	buffer3 = mlx_get_data_addr(img3, &bpp, &sl, &endian);
 	draw_bg((unsigned long int*)buffer);
+	draw_hbg(buffer2, 0);
+	draw_hbg(buffer3, 1);
+	mlx_put_image_to_window(mlx, win, img1, 0, 0);
+	mlx_put_image_to_window(mlx, win, img2, WIDTH / 2, 0);
+	mlx_put_image_to_window(mlx, win, img3, 0, 0);
+	usleep(3000000);
 
+return ;
 	ft_putendl("on va prendre l'image");
-	if (!(img2 = mlx_xpm_file_to_image(mlx, "Resources.xpm", &x, &y)))
-	ft_putendl("ya pa dimaj");
-	else
-	ft_putendl("ya une imaj");
-	printf("Resources.xpm : %dx%d\n", x, y);
-	btex = mlx_get_data_addr(img2, &tbpp, &tsl, &tendian);
 
-	draw_wall((unsigned int*)buffer, (unsigned int*)btex);
+/*
+	if (!(img2 = mlx_xpm_file_to_image(mlx, "Resources.xpm", &x, &y)))
+		ft_putendl("ya pa dimaj");
+	else
+		ft_putendl("ya une imaj");
+*/
+	printf("Resources.xpm : %dx%d\n", x, y);
+//	btex = mlx_get_data_addr(img2, &tbpp, &tsl, &tendian);
+
+//	draw_wall((unsigned int*)buffer, (unsigned int*)btex);
 
 	#define EPSI 128 * 128 * 4
 	int	i;
@@ -146,12 +173,12 @@ void test()
 	while (++i < frame)
 	{
 		t1 = (t_texture){(unsigned int*)btex, 128, 128};
-		apply_text(t1, t2, (t_ivec2){i * 10, i * 18});
+		apply_text(t1, t2, (t_ivec2){i % 16 * 128, i / 16 * 128});
 		btex += EPSI;
-		usleep(500000);
+		usleep(50000);
 		mlx_put_image_to_window(mlx, win, img1, 0, 0);
 	}
-	usleep(5000000);
+	usleep(50000);
 
 	mlx_destroy_image(mlx, img1);
 	mlx_destroy_image(mlx, img2);

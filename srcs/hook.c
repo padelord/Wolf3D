@@ -20,8 +20,21 @@ int				key_hook(int keycode, void *param)
 
 int				loop_hook(void *param)
 {
-	t_env			*env;
+	static int	frame = 0;
+	static int	moment = 0;
+	int			t;
+	t_env		*env;
 
 	env = (t_env*)param;
+	t = time(0);
+	if (moment != t)
+	{
+		printf("%dfps\n", frame);
+		moment = t;
+		frame = 0;
+	}
+	draw_bg(env->img->buffer);
+	mlx_put_image_to_window(env->mlx, env->win, env->img->ptr, 0, 0);
+	frame++;
 	return (1);
 }

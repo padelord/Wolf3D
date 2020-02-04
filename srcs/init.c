@@ -6,7 +6,7 @@
 /*   By: padelord <padelord@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/29 21:40:33 by padelord          #+#    #+#             */
-/*   Updated: 2020/02/01 21:48:13 by padelord         ###   ########.fr       */
+/*   Updated: 2020/02/03 13:24:32 by padelord         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,27 @@
 #include "wolf3d.h"
 #include <math.h>
 
-int		init_player(t_plr **plr, t_ivec2 orig, float angle)
+int		init_player(t_plr *plr, t_ivec2 orig, float angle)
 {
-	if (!(*plr = malloc(sizeof(t_plr))))
-		return (R_PLR_MALC);
-	(*plr)->pos = (t_vec2){((float)orig.x) + 0.5, ((float)orig.y) + 0.5};
-	(*plr)->a = angle;
-	printf("new player at %.2f:%.2f\n", (*plr)->pos.x, (*plr)->pos.y);
+	plr->pos = (t_vec2){((float)orig.x) + 0.5, ((float)orig.y) + 0.5};
+	plr->a = angle;
+	plr->fov = 70.0 * M_PI / 360;
+	printf("new player at %.2f:%.2f looking at %.2f with Fov of %.2f\n", plr->pos.x, plr->pos.y, plr->a, plr->fov);
+	return (0);
+}
+
+int			new_image(t_img *t, void *mlx, int w, int h)
+{
+	ft_bzero(t, sizeof(t_img));
+	if (!(t->ptr = mlx_new_image(mlx, w, h)))
+		return (R_IMG_INIT);
+	t->w = w;
+	t->h = h;
+	if (!(t->buffer = (unsigned int *)mlx_get_data_addr(t->ptr, &(t->bpp),
+													&(t->sl), &(t->endian))))
+		return (R_IMG_BUFF);
+	ft_bzero(t->buffer, w * h * sizeof(int));
+	draw_bg(t->buffer);
 	return (0);
 }
 
@@ -33,6 +47,9 @@ int		init_env(t_env *env, const char *path)
 
 	err = 0;
 	env->state = 0;
+	env->map = &(env->global.map);
+	env->img = &(env->global.img);
+	env->plr = &(env->global.plr);
 	if (!(env->mlx = mlx_init()))
 		return (R_MLX_INIT);
 	else
@@ -41,11 +58,13 @@ int		init_env(t_env *env, const char *path)
 		env->state |= ST_INIT_WIN;
 	else
 		return (R_WIN_INIT);
-	if (!(err = get_map(path, &env->map)))
+	if ((err = new_image(env->img, env->mlx, WIDTH, HEIGHT)))
+		return (err);
+	if (!(err = get_map(path, env->map)))
 		env->state |= ST_INIT_MAP;
 	else
 		return (err);
-	if (!(err = init_player(&env->plr, env->map->orig, 0.0)))
+	if (!(err = init_player(env->plr, env->map->orig, 0.0)))
 		env->state |= ST_INIT_PLR;
 	else
 		return (err);

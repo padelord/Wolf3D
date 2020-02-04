@@ -61,7 +61,7 @@ int		check_player(t_map *map, char *buffer, t_ivec2 size)
 	return (1);
 }
 
-int		valid_map(t_map **map, char *buffer)
+int		valid_map(t_map *map, char *buffer)
 {
 	int	tline;
 	char	*t;
@@ -82,15 +82,15 @@ int		valid_map(t_map **map, char *buffer)
 		tline++;
 		t++;
 	}
-	if (!(*map = malloc(sizeof(t_map) + sizeof(int) * i.x * i.y)))
+	if (!(map->data = malloc(sizeof(int) * i.x * i.y)))
 		return (R_MAP_MALC);//TODO: malloc foireux
-	ft_bzero((void*)*map, sizeof(t_map) + sizeof(int) * i.x * i.y);
-	if (!(check_player(*map, buffer, i)))
+	ft_bzero((void*)(map->data), sizeof(int) * i.x * i.y);
+	if (!(check_player(map, buffer, i)))
 		return (R_MAP_PLYR);
-	return (get_validmap(*map, buffer));
+	return (get_validmap(map, buffer));
 }
 
-int		get_map(const char *name, t_map **map)
+int		get_map(const char *name, t_map *map)
 {
 	char	buffer[BUFF_SIZE];
 	int		fd;
@@ -112,6 +112,7 @@ int		get_map(const char *name, t_map **map)
 
 void	delete_map(t_map *data)
 {
+	ft_bzero(data->data, sizeof(int) * data->height * data->width);
+	free(data->data);
 	ft_bzero(data, sizeof(t_map) + data->height * data->width);
-	free(data);
 }

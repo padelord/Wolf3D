@@ -12,15 +12,19 @@ int		close_env(t_env *env, int ex)
 	}
 	if (env->state & ST_INIT_PLR)
 	{
-		free((void*)(env->plr));
+		ft_bzero((void*)(env->plr), sizeof(t_plr));
 		env->state ^= ST_INIT_PLR;
 	}
-
 	if (env->state & ST_INIT_WIN)
 	{
+		ft_putendl("Destroying window");
 		mlx_destroy_window(env->mlx, env->win);
 	}
+	mlx_do_sync(env->mlx);
 	if (ex)
+	{
+		//read(0, &ex, 1);
 		exit(0);
+	}
 	return (1);
 }

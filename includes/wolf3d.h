@@ -1,14 +1,15 @@
 #ifndef WOLF3D_H
 # define WOLF3D_H
 # define PNAME "Wolfenstein 3D"
-# define HEIGHT 900
-# define WIDTH 1600
+# define HEIGHT 1080
+# define WIDTH 1920
 # define WALL 'W'
 # define FLOOR '.'
 # define PLR 'P'
+# define TEXTURE_SIZE 128
 # define C_TRANSP 9961608U
 # define FC_SKY 0xFF3F3F3FFF3F3F3F
-# define FC_FLOOR 0xFF727272FF727272
+# define FC_FLOOR 0x0072727200727272
 # define USAGE "./Wolf3D [map] || \"test\""
 # define IWALL 0x01020304
 #include <stdio.h>
@@ -22,6 +23,7 @@ typedef struct	s_plr	t_plr;
 typedef struct	s_map	t_map;
 typedef struct	s_img	t_img;
 typedef struct	s_env	t_env;
+typedef struct	s_texture t_texture;
 typedef enum	e_state	t_state;
 
 enum	e_state
@@ -44,6 +46,8 @@ enum	e_err
 	R_PLR_MALC,
 	R_MLX_INIT,
 	R_WIN_INIT,
+	R_IMG_INIT,
+	R_IMG_BUFF,
 	R_MAX
 };
 
@@ -51,6 +55,7 @@ struct					s_plr
 {
 	t_vec2				pos;
 	float				a;
+	float				fov;
 };
 
 struct					s_map
@@ -58,7 +63,14 @@ struct					s_map
 	int				height;
 	int				width;
 	t_ivec2			orig;
-	unsigned int	data[];
+	unsigned int	*data;
+};
+
+struct					s_texture
+{
+	unsigned int	*pixels;//[TEXTURE_SIZE * TEXTURE_SIZE];
+	int				w;
+	int				h;
 };
 
 struct					s_img
@@ -72,14 +84,24 @@ struct					s_img
 	unsigned int	*buffer;
 };
 
+typedef struct	s_glob	t_glob;
+
+struct					s_glob
+{
+	t_map		map;
+	t_plr		plr;
+	t_img		img;
+};
+
 struct	s_env
 {
 	int		state;
 	void	*mlx;
-	t_img	*img;
 	void	*win;
+	t_img	*img;
 	t_plr	*plr;
 	t_map	*map;
+	t_glob	global;
 };
 
 /*
@@ -92,7 +114,7 @@ void	printmap(t_map *map);
 **	map.c :
 */
 
-int		get_map(const char *name, t_map **map);
+int		get_map(const char *name, t_map *map);
 void	delete_map(t_map *data);
 
 /*
