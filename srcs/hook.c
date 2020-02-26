@@ -25,9 +25,9 @@ int				move_player(t_plr *plr, t_ivec2 dir, t_map map)
 	}
 	else
 		angle = M_PI / 2.0 * (float)dir.y;
-	newpos = (t_vec2){cos(plr->a + angle),
-						-1 * sin(plr->a + angle)};
-	plr->pos += newpos * SPEED;
+	newpos = plr->pos + ((t_vec2){cos(plr->a + angle), -1 * sin(plr->a + angle)}) * SPEED;
+	if (map.data[(int)newpos.x + (int)newpos.y * map.width] == 0)
+		plr->pos = newpos;
 }
 
 int				key_hook(int keycode, void *param)
