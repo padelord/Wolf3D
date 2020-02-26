@@ -54,27 +54,23 @@ void print_bchar(unsigned char c)
 	write(1, buff, 8);
 }
 
-
-
 void apply_text(t_texture src, t_texture dst, t_ivec2 pos)
 {
 	t_ivec2	i;
 	t_ivec2	j;
 	int		cas;
 
-	if (src.w + pos.x > dst.w || src.h + pos.y > dst.h)
-	return ;
 	i.y = -1;
 	j.y = pos.y;
-	while (++i.y < src.h)
+	while (++i.y < src.h && i.y + pos.y < src.h)
 	{
 		i.x = -1;
 		j.x = pos.x;
-		while (++i.x < src.w)
+		while (++i.x < src.w && i.x + pos.x < src.w)
 		{
 			cas = i.x + i.y * src.w;
 			if (src.pixels[cas] != C_TRANSP)
-			dst.pixels[j.x + j.y * dst.w] = src.pixels[cas];
+				dst.pixels[j.x + j.y * dst.w] = src.pixels[cas];
 			j.x++;
 		}
 		j.y++;
@@ -87,7 +83,7 @@ void draw_hbg(unsigned int *buffer, int al)
 	int				i;
 	int				size;
 
-	color = (al ? 0x00FFFFFF : 0xFFFFFFFF);
+	color = (al ? 0x00CB99C9 : 0xFFFFFFFF);
 	size = WIDTH * (HEIGHT / 2);
 	i = -1;
 	while (++i < size)
@@ -144,8 +140,8 @@ void test()
 	draw_bg((unsigned long int*)buffer);
 	draw_hbg(buffer2, 0);
 	draw_hbg(buffer3, 1);
-	mlx_put_image_to_window(mlx, win, img1, 0, 0);
 	mlx_put_image_to_window(mlx, win, img2, WIDTH / 2, 0);
+	mlx_put_image_to_window(mlx, win, img1, 0, 0);
 	mlx_put_image_to_window(mlx, win, img3, 0, 0);
 	mlx_do_sync(mlx);
 	usleep(3000000);

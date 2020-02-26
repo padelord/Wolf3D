@@ -10,6 +10,9 @@
 # define C_TRANSP 9961608U
 # define FC_SKY 0xFF3F3F3FFF3F3F3F
 # define FC_FLOOR 0x0072727200727272
+# define C_SKY 0x003F3F3F
+# define C_WALL 0x00FF0000
+# define C_FLOOR 0x00727272
 # define USAGE "./Wolf3D [map] || \"test\""
 # define IWALL 0x01020304
 
@@ -115,7 +118,7 @@ void	printmap(t_map *map);
 **	map.c :
 */
 
-int		get_map(const char *name, t_map *map);
+int		get_map(const char *name, t_map *map, int *state);
 void	delete_map(t_map *data);
 
 /*

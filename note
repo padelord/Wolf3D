@@ -40,4 +40,5 @@ zbuffer :
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-uint *img, *tex;
+
+uint *img, *tex, float size;

@@ -1,8 +1,8 @@
+#include <unistd.h>
+#include <math.h>
 #include "libft.h"
 #include "mlx.h"
 #include "wolf3d.h"
-#include <unistd.h>
-#include <math.h>
 
 void printerror(int code, char *msg[])
 {
